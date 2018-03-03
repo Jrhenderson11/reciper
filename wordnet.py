@@ -17,10 +17,10 @@ def get_hyponyms(word):
 	for meaning in (net.synsets(word)):
 		#hypos.extend(meaning.hyponyms())
 		for synonym in meaning.hyponyms():
-			#word2 = re.sub(r"Synset\(\'", "", str(synonym))
-			#precise_word = re.sub(r"\.[a-z]*\.\d*\'\)","", word2).strip()
-			#hypos.append(precise_word)
-			hypos.append(str(synonym))
+			word2 = re.sub(r"Synset\(\'", "", str(synonym))
+			precise_word = re.sub(r"\.[a-z]*\.\d*\'\)","", word2).strip()
+			hypos.append(precise_word)
+			#hypos.append(str(synonym))
 	return hypos
 
 def get_hypernyms(word):
@@ -30,8 +30,8 @@ def get_hypernyms(word):
 			word2 = re.sub(r"Synset\(\'", "", str(synonym))
 			precise_word = re.sub(r"\.[a-z]*\.\d*\'\)","", word2).strip()
 			#print precise_word
-			#hypers.append(precise_word)
-			hypers.append(str(synonym))
+			hypers.append(precise_word)
+			#hypers.append(str(synonym))
 	#print "returning " + str(hypers)
 	return hypers
 
@@ -119,3 +119,12 @@ def main():
 		   for doc in ieer.parsed_docs(fileid):
 		      for rel in relextract.extract_rels('PER', 'ORG', doc, corpus='ieer', pattern=ROLES):
 		          print(relextract.rtuple(rel)) # doctest: +ELLIPSIS
+
+#test code
+if __name__ == "__main__":
+	input = ""
+
+	while not input == "quit":
+		print "enter word"
+		input = raw_input()
+		print get_all_related(input)

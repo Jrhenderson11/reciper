@@ -21,7 +21,6 @@ def answer_question(query, text):
 			print "temp query"
 			find_temperature(method)
 		elif (adj=='long'):
-			print "long"
 			#look through steps for time using FOR __ MINUTES / HOURS or UNTIL
 			#get steps with verb same as when
 			found = False
@@ -29,7 +28,8 @@ def answer_question(query, text):
 				
 				if (subject in step and (verb in step)):
 					found = True
-					if (len(re.findall("for .* minutes" , step)) > 0):
+					matches =re.findall(r'.* (minute|hour|second)s?' , step) 
+					if (len(matches) > 0):
 						utils.printgreen(step)
 			if (found==False):
 				print "LOOKING AT SYNONYMS"
@@ -38,11 +38,7 @@ def answer_question(query, text):
 					synonyms = wordnet.get_all_related(verb)
 					if not synonyms is None:
 						for synonym in synonyms:
-
-							#print "checking " + precise_word
-							word2 = re.sub(r"Synset\(\'", "", str(synonym))
-							precise_word = re.sub(r"\.[a-z]*\.\d*\'\)","", word2).strip()
-							if (subject in step and (precise_word in step)):
+							if (subject in step and (synonym in step)):
 								found = True
 								
 								if (len(re.findall("for .* minutes" , step)) > 0):

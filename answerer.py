@@ -1,5 +1,8 @@
+import re
 import utils
 import parser
+import wordnet
+
 
 def answer_question(query, text):
 	(desc, ingredients, method) = text
@@ -13,9 +16,44 @@ def answer_question(query, text):
 			#basic: look in ingredients for subj
 			if (not subject == ""):
 				quantity_of(subject, ingredients)
+		elif (adj=='hot'):
+			#query temp
+			print "temp query"
+			find_temperature(method)
+		elif (adj=='long'):
+			print "long"
+			#look through steps for time using FOR __ MINUTES / HOURS or UNTIL
+			#get steps with verb same as when
+			found = False
+			for step in parser.get_steps(method):
+				
+				if (subject in step and (verb in step)):
+					found = True
+					if (len(re.findall("for .* minutes" , step)) > 0):
+						utils.printgreen(step)
+			if (found==False):
+				print "LOOKING AT SYNONYMS"
+				#start searching synonyms
+				for step in parser.get_steps(method):
+					synonyms = wordnet.get_all_related(verb)
+					if not synonyms is None:
+						for synonym in synonyms:
+
+							#print "checking " + precise_word
+							word2 = re.sub(r"Synset\(\'", "", str(synonym))
+							precise_word = re.sub(r"\.[a-z]*\.\d*\'\)","", word2).strip()
+							if (subject in step and (precise_word in step)):
+								found = True
+								
+								if (len(re.findall("for .* minutes" , step)) > 0):
+									utils.printgreen(step)
+									break
+					if found==True:
+						break
+
 		elif (not verb == ""):
 			#look for verb
-			print "looking for adj for " + verb
+			print "looking for adverb for " + verb
 			#look for adverb (RB, RBR, RBS)
 			#print "method:" + method
 			for line in method.split("\n"):
@@ -39,7 +77,11 @@ def answer_question(query, text):
 				print "--------------------------"
 				break
 			i = i+1
-
+	elif (question=='what'):
+		#synonyms temp
+		if (subject=='temperature' or 'temperature' in wordnet.get_all_related(subject) or 'heat' in wordnet.get_all_related(adj) or 'hot' in wordnet.get_all_related(adj)):
+			find_temperature(method)
+	
 
 def get_ingredient_lines(subject, ingredients):
 	found = False
@@ -67,3 +109,11 @@ def quantity_of(subject, ingredients):
 					quantity = line.split("of")[0].strip()
 
 				#print "quantity: " + quantity			
+
+def find_temperature(method):
+	#oven to
+	#bake at
+	# ___ at ___C
+	for step in parser.get_steps(method):
+		if (len(re.findall("oven to", step))>0) or (len(re.findall("bake at", step))>0) or (len(re.findall(r"Gas\s?\d", step))>0) or(len(re.findall(r"\d*c\W", step))>0) or (len(re.findall(r"\df", step))>0):
+			utils.printgreen(step)

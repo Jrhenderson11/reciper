@@ -1,6 +1,5 @@
 import re
 import nltk
-#from nltk.corpus import ieer
 from nltk.corpus import wordnet as net,ieer, semcor
 
 def gethypernymtree(meaning):
@@ -10,11 +9,30 @@ def gethypernymtree(meaning):
 		newlist.append(gethypernymtree(mean))
 	return (list + newlist)
 
+def get_all_related(word):
+	return get_hypernyms(word)+get_hyponyms(word)
+
+def get_hyponyms(word):
+	hypos = []
+	for meaning in (net.synsets(word)):
+		#hypos.extend(meaning.hyponyms())
+		for synonym in meaning.hyponyms():
+			#word2 = re.sub(r"Synset\(\'", "", str(synonym))
+			#precise_word = re.sub(r"\.[a-z]*\.\d*\'\)","", word2).strip()
+			#hypos.append(precise_word)
+			hypos.append(str(synonym))
+	return hypos
 
 def get_hypernyms(word):
 	hypers = []
 	for meaning in (net.synsets(word)):
-		hypers.extend(meaning.hypernyms())
+		for synonym in meaning.hypernyms():
+			word2 = re.sub(r"Synset\(\'", "", str(synonym))
+			precise_word = re.sub(r"\.[a-z]*\.\d*\'\)","", word2).strip()
+			#print precise_word
+			#hypers.append(precise_word)
+			hypers.append(str(synonym))
+	#print "returning " + str(hypers)
 	return hypers
 
 def main():

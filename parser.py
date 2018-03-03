@@ -31,6 +31,7 @@ def get_tokenised(text):
 			words.append(word)
 	return words
 
+
 def postag(words):
 	file = open("postagger.pickle", "rb")
 	tagger = pickle.load(file)

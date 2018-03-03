@@ -2,6 +2,7 @@ import re
 import sys
 import parser
 import answerer
+import conversions
 import filehandling
 
 step = 0
@@ -24,8 +25,9 @@ def split(text):
 def simple_query(input, text, step):
 	(desc, ingredients, method) = text
 	steps = parser.get_steps(method)
+
+
 	if (input=='next' or input == 'next step' or input == 'next instruction'):
-		
 		if (not step==len(steps)):
 			print steps[step+1]
 			step = step + 1
@@ -62,6 +64,9 @@ def simple_query(input, text, step):
 		num = int(re.sub("step ", "", input))
 		print "	" + parser.get_steps(method)[num]
 		return True
+	elif ("convert" in input):
+		conversions.answer(input)
+		return True
 	else:
 		return False
 
@@ -69,16 +74,19 @@ def query_loop(text):
 	step=0
 	input = ""
 	#quantity name
+	lastinput = ""
 	while (not (input == "quit" or input=="exit")):
 		print "\033[93m"
 		print "enter a query:\033[0m"
 		input = raw_input()
+		if ('\x1b' in input):
+			input = lastinput
 		input = input.lower()
 
 		if (not simple_query(input, text, step)):
 			query_type = parser.parse_query(input)
 			answerer.answer_question(query_type, text)
-
+		lastinput = input
 
 
 if __name__ == '__main__':

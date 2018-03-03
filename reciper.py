@@ -4,13 +4,8 @@ import parser
 import answerer
 import filehandling
 
+step = 0
 
-def get_steps(method):
-	steps = []
-	for line in method.split("\n"):
-		if (not line.strip()==""):
-			steps.append(line)
-	return steps
 
 def split(text):
 	description_text = ""
@@ -26,10 +21,19 @@ def split(text):
 	return (description_text, ingredient_text, method_text)
 
 
-def simple_query(input, text):
+def simple_query(input, text, step):
 	(desc, ingredients, method) = text
-	
-	if ('description' in input):
+	steps = parser.get_steps(method)
+	if (input=='next' or input == 'next step' or input == 'next instruction'):
+		
+		if (not step==len(steps)):
+			print steps[step+1]
+			step = step + 1
+		return True
+	elif (input=='current' or input == 'current step' or input == 'current instruction'):
+		print "	- " + steps[step]
+		return True
+	elif ('description' in input):
 		print "	< DESCRIPTION >"
 		for line in desc.split("\n"): 
 			print "  " + line
@@ -56,7 +60,7 @@ def simple_query(input, text):
 		return True
 	elif (re.match(r'step \d*', input)):
 		num = int(re.sub("step ", "", input))
-		print "	" + get_steps(method)[num]
+		print "	" + parser.get_steps(method)[num]
 		return True
 	else:
 		return False
@@ -66,27 +70,19 @@ def query_loop(text):
 	input = ""
 	#quantity name
 	while (not (input == "quit" or input=="exit")):
-		#green: '\033[92m'
-		# default: "\033[0m"
-		#red: "\033[31m"
-		#underlined \e[4m
-		#Bold \e[1m
-		#yellow \e[93m
-
-		
 		print "\033[93m"
 		print "enter a query:\033[0m"
 		input = raw_input()
 		input = input.lower()
 
-		if (not simple_query(input, text)):
+		if (not simple_query(input, text, step)):
 			query_type = parser.parse_query(input)
 			answerer.answer_question(query_type, text)
 
 
 
 if __name__ == '__main__':
-
+	step = 0
 	if len(sys.argv) >1:
 		fname= sys.argv[1]
 	else:

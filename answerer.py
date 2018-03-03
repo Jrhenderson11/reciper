@@ -1,7 +1,6 @@
 import utils
 import parser
 
-
 def answer_question(query, text):
 	(desc, ingredients, method) = text
 	(question, adj, subject, verb) = query
@@ -12,7 +11,8 @@ def answer_question(query, text):
 
 		if (adj=='much' or adj=='many'):
 			#basic: look in ingredients for subj
-			print get_ingredient_lines(subject, ingredients)
+			if (not subject == ""):
+				quantity_of(subject, ingredients)
 		elif (not verb == ""):
 			#look for verb
 			print "looking for adj for " + verb
@@ -29,6 +29,17 @@ def answer_question(query, text):
 						if (not tag is None):
 							if (tag[0]=='R'):
 								utils.printgreen("ADVERB: " + word)
+	elif (question == 'when'):
+		#look for subject and verb combo in a step
+		i=0
+		for step in parser.get_steps(method):
+			if (verb in step) and subject in step:
+				print "	< STEP " + str(i) + ">"
+				print step
+				print "--------------------------"
+				break
+			i = i+1
+
 
 def get_ingredient_lines(subject, ingredients):
 	found = False
@@ -36,5 +47,23 @@ def get_ingredient_lines(subject, ingredients):
 	for line in ingredients.split("\n"):
 		if (subject in line):
 			lines.append(line)
-			utils.printgreen("found " + subject + " in " + line)
+			#print "found " + subject + " in " + line
+			#print "TRYING TO PARSE"
+	
 	return lines
+
+def quantity_of(subject, ingredients):
+	quantity = ""
+	forchunks = ingredients.split("\n\n")
+	#print forchunks
+	for part in forchunks:
+		if (not (part.strip() == "")):
+			useful = get_ingredient_lines(subject, part)
+			if len(useful) > 0:
+				print part.strip().split("\n")[0]
+			for line in useful:
+				utils.printgreen(line)
+				if ('of' in line):
+					quantity = line.split("of")[0].strip()
+
+				#print "quantity: " + quantity			

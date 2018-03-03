@@ -3,6 +3,7 @@ import os
 import nltk
 import pickle
 import string
+import wordnet
 #import Tagger
 from os import listdir
 from nltk.corpus import brown
@@ -12,6 +13,13 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger
 #brown.words()
 #treebank.words()
+
+def get_steps(method):
+	steps = []
+	for line in method.split("\n"):
+		if (not line.strip()==""):
+			steps.append(line)
+	return steps
 
 def get_tokenised(text):
 	allwords = (word_tokenize(text))
@@ -36,7 +44,8 @@ def parse_query(input):
 	#split question into parts
 	#lem and stem???
 	words = get_tokenised(input)
-	print words
+	
+
 	#remove punct
 
 			
@@ -61,10 +70,24 @@ def parse_query(input):
 			if ('NN' in tag[1]):
 				subject = tag[0]
 
-	print question
-	print adj
-	print subject
-	print verb
+	# Now use wordnet
+
+	if (subject==''):
+		print "	USING WORDNET FOR SUBJECT HYPERNYMS"
+		for word in words:
+			hypers = wordnet.get_hypernyms(word)
+			#print hypers
+			if "food" in str(hypers):
+				subject = word
+
+	if (verb==''):
+		print "	USING WORDNET FOR VERB HYPERNYMS"
+		for word in words:
+			hypers = wordnet.get_hypernyms(word)
+			if ".v." in str(hypers):
+				verb = word		
+
+	print (question, adj, subject, verb)
 
 	return (question, adj, subject, verb)
 

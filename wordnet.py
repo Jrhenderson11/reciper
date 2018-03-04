@@ -2,6 +2,12 @@ import re
 import nltk
 from nltk.corpus import wordnet as net,ieer, semcor
 
+def get_full_meaning(word):
+	meanings = []
+	for meaning in net.synsets(word):
+		meanings.append(re.sub(r"\'\)", "", re.sub(r"Synset\(\'", "", str(meaning))))
+	return meanings
+
 def gethypernymtree(meaning):
 	list = meaning.hypernyms()
 	newlist = []
@@ -15,24 +21,31 @@ def get_all_related(word):
 def get_hyponyms(word):
 	hypos = []
 	for meaning in (net.synsets(word)):
-		#hypos.extend(meaning.hyponyms())
-		for synonym in meaning.hyponyms():
-			word2 = re.sub(r"Synset\(\'", "", str(synonym))
+		for hyponym in meaning.hyponyms():
+			word2 = re.sub(r"Synset\(\'", "", str(hyponym))
 			precise_word = re.sub(r"\.[a-z]*\.\d*\'\)","", word2).strip()
 			hypos.append(precise_word)
-			#hypos.append(str(synonym))
 	return hypos
 
 def get_hypernyms(word):
 	hypers = []
 	for meaning in (net.synsets(word)):
-		for synonym in meaning.hypernyms():
-			word2 = re.sub(r"Synset\(\'", "", str(synonym))
+		for hypernym in meaning.hypernyms():
+			word2 = re.sub(r"Synset\(\'", "", str(hypernym))
 			precise_word = re.sub(r"\.[a-z]*\.\d*\'\)","", word2).strip()
-			#print precise_word
 			hypers.append(precise_word)
-			#hypers.append(str(synonym))
-	#print "returning " + str(hypers)
+	return hypers
+
+def get_full_hyponyms(word):
+	hypos = []
+	for meaning in (net.synsets(word)):
+		hypos.extend(meaning.hyponyms())
+	return hypos
+
+def get_full_hypernyms(word):
+	hypers = []
+	for meaning in (net.synsets(word)):
+		hypers.extend(meaning.hyponyms())
 	return hypers
 
 def main():

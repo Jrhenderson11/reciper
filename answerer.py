@@ -26,9 +26,9 @@ def answer_question(query, text):
 			found = False
 			for step in parser.get_steps(method):
 				
-				if (subject in step and (verb in step)):
+				if (subject in step and (verb + " " in step)):
 					found = True
-					matches =re.findall(r'.* (minute|hour|second)s?' , step) 
+					matches =re.findall(r'.* (min(ute)?|hour|second)s?' , step) 
 					if (len(matches) > 0):
 						utils.printgreen(step)
 			if (found==False):
@@ -41,11 +41,13 @@ def answer_question(query, text):
 							if (subject in step and (synonym in step)):
 								found = True
 								
-								if (len(re.findall("for .* minutes" , step)) > 0):
+								if (len(re.findall(r'.* (min(ute)?|hour|second)s?' , step)) > 0):
 									utils.printgreen(step)
 									break
 					if found==True:
 						break
+			if found==False:
+				find_times(desc)
 
 		elif (not verb == ""):
 			#look for verb
@@ -68,16 +70,19 @@ def answer_question(query, text):
 		i=0
 		for step in parser.get_steps(method):
 			if (verb in step) and subject in step:
-				print "	< STEP " + str(i) + ">"
-				print step
-				print "--------------------------"
+				utils.printgreen("	< STEP " + str(i) + ">")
+				utils.printgreen(step)
+				utils.printgreen("--------------------------")
 				break
 			i = i+1
 	elif (question=='what'):
 		#synonyms temp
 		if (subject=='temperature' or 'temperature' in wordnet.get_all_related(subject) or 'heat' in wordnet.get_all_related(adj) or 'hot' in wordnet.get_all_related(adj)):
 			find_temperature(method)
-	
+	elif (question=="need"):
+		#look through inredients for subj
+		if not subject == '':
+			quantity_of(subject, ingredients)
 
 def get_ingredient_lines(subject, ingredients):
 	found = False
@@ -113,3 +118,8 @@ def find_temperature(method):
 	for step in parser.get_steps(method):
 		if (len(re.findall("oven to", step))>0) or (len(re.findall("bake at", step))>0) or (len(re.findall(r"Gas\s?\d", step))>0) or(len(re.findall(r"\d*c\W", step))>0) or (len(re.findall(r"\df", step))>0):
 			utils.printgreen(step)
+
+def find_times(text):
+	for line in text.split("\n"):
+		if (len(re.findall(r'.* (min(ute)?|hour|second)s?', line)) > 0):
+			utils.printgreen(line)

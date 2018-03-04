@@ -4,15 +4,12 @@ import nltk
 import pickle
 import string
 import wordnet
-#import Tagger
 from os import listdir
 from nltk.corpus import brown
 from nltk.corpus import treebank
 from nltk.tag import DefaultTagger
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger
-#brown.words()
-#treebank.words()
 
 def get_steps(method):
 	steps = []
@@ -40,16 +37,10 @@ def postag(words):
 	return tagged
 
 def parse_query(input):
-	
-
 	#split question into parts
 	#lem and stem???
 	words = get_tokenised(input)
-	
-
-	#remove punct
-
-			
+		
 	#tagged[0][0] is word,  tagged[0][1] is tag
 	#first index is word index, 2nd is word / tag
 	tagged = postag(words)
@@ -60,7 +51,8 @@ def parse_query(input):
 	adj = ""
 	subject = ""
 	verb = ""
-	for tag in tagged:
+	for i in range(len(tagged)):
+		tag = tagged[i]
 		if not tag[1] is None:
 			if (tag[1] == 'WRB' or tag[1]=='WP'):
 				question = tag[0]
@@ -68,25 +60,44 @@ def parse_query(input):
 				adj = tag[0]
 			if (tag[1]=='VB'):
 				verb = tag[0]
+			if (tag[1]=='DT'):
+				print "DT"
+				#look for noun
+				for j in range(i, len(tagged)):
+					print ""
+					if tagged[j][1] == 'NN':
+						subject = tagged[j][0]
+					if (tagged[j][1] is None and '.n.' in str(wordnet.get_full_meaning(tagged[j][0]))):
+						subject=tagged[j][0]
+						break
 			if ('NN' in tag[1]):
 				subject = tag[0]
+		else:
+			print wordnet.get_full_meaning(tag[0])
 
 	# Now use wordnet
 
 	if (subject==''):
 		print "	USING WORDNET FOR SUBJECT HYPERNYMS"
 		for word in words:
-			hypers = wordnet.get_hypernyms(word)
-			#print hypers
+			hypers = wordnet.get_all_related(word)
+			print hypers
 			if "food" in str(hypers):
 				subject = word
 
 	if (verb==''):
 		print "	USING WORDNET FOR VERB HYPERNYMS"
 		for word in words:
-			hypers = wordnet.get_hypernyms(word)
+			hypers = wordnet.get_full_meaning(word)
 			if ".v." in str(hypers):
 				verb = word		
+
+	#what is question???
+	if (question==''):
+		#Do I need
+		if "need" in input:
+			question="need"
+
 
 	print (question, adj, subject, verb)
 

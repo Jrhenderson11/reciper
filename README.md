@@ -9,6 +9,8 @@ user can ask questions to.
 
 It uses several natural language processing techniques to analyse both the question and recipe text to come up with an answer, see the **Technical details** section for more info
 
+Whilst this project is a question answering system it is only used on a very localised domain, this means lots of research on question answering / techniques used in the field are not relevant here, especially if they incorporate lots of Information Retreival methods. Here the problem is largely to do with disambiguating word meanings and preventing false positives.
+
 -------------------------------------------------
 ## Usage:
 
@@ -24,7 +26,7 @@ useful interface for querying wordnet synonym information
 -------------------------------------------------
 ## Files:
 
-#### Main functionality:
+### Main functionality:
 
 **reciper.py**: main file that displays interface and answers very simple queries
 
@@ -34,7 +36,7 @@ useful interface for querying wordnet synonym information
 
 **wordnet.py**: interfaces with nltk wordnet to find synonyms, hypernyms and hyponyms of words, this allows **parser** and **answerer** to explore different meanings of a word e.g cook and bake being similar, mix being a verb and a noun
 
-#### Other functionality:
+### Other functionality:
 
 **utils.py**: some useful output functions
 
@@ -42,7 +44,7 @@ useful interface for querying wordnet synonym information
 
 **conversions.py**: handles unit conversion queries
 
-#### Other files:
+### Other files:
 
 **Recipe**: a BBC recipe for apple crumble (https://www.bbc.co.uk/food/recipes/applecrumble_2971)
 
@@ -52,7 +54,34 @@ useful interface for querying wordnet synonym information
 
 **postagger.pickle**: a pre-trained part of speech tagger (uses trigrams but can't remember what i trained it on)
 
+-------------------------------------------------
 
+## TODO:
+
+apply QA technique: Category specific transformation rules (hand crafted)
+Where-Q insert "is" to all possible locations e.g
+–"where is the louvre museum located" 
+–is the louvre located
+–the is louvre museum located 
+–the louvre is museum located 
+–the louvre museum is located
+
+stop confusion between priority of alternate meanings in wordnet e.g
+
+	how long in the oven
+
+is interpreted as
+
+	('how', 'long', 'oven', 'long')
+
+but actually long should not be used as a verb here
+
+one way to fix this is to look at the number of meanings of 'long' that are verbs vs nouns
+or do not allow word to appear in 2 different parts of sentence (beware of mix!)
+
+OR: if at the end of parsing a word does appear twice use the most probable form (using wordnet synonyms) to distinguish
+
+improve recognition of verbs and subjects with wordnet and reduce false positives
 
 -------------------------------------------------
 ## Technical details:

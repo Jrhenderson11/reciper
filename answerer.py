@@ -21,12 +21,15 @@ def answer_question(query, text):
 			find_temperature(method)
 		elif (adj=='long'):
 			#get steps with verb same as when
+			if (verb=='make' and subject==""):
+				find_times(desc)
+
 			found = False
 			for step in parser.get_steps(method):
 				
 				if (subject in step and (verb + " " in step)):
 					found = True
-					matches =re.findall(r'.* (min(ute)?|hour|second)s?' , step) 
+					matches = re.findall(r'.* (min(ute)?|h(ou)?r|second)s?' , step) 
 					if (len(matches) > 0):
 						utils.printgreen(step)
 			if (found==False):
@@ -39,7 +42,7 @@ def answer_question(query, text):
 							if (subject in step and (synonym in step)):
 								found = True
 								
-								if (len(re.findall(r'.* (min(ute)?|hour|second)s?' , step)) > 0):
+								if (len(re.findall(r'.* (min(ute)?|h(ou)?r|second)s?' , step)) > 0):
 									utils.printgreen(step)
 									break
 					if found==True:
@@ -70,6 +73,9 @@ def answer_question(query, text):
 		#synonyms temp
 		if (subject=='temperature' or 'temperature' in wordnet.get_all_related(subject) or 'heat' in wordnet.get_all_related(adj) or 'hot' in wordnet.get_all_related(adj)):
 			find_temperature(method)
+		#serve with
+
+
 	elif (question=="need"):
 		#look through inredients for subj if no verb
 		if (verb==""):

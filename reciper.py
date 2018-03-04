@@ -79,15 +79,15 @@ def query_loop(text):
 		print "\033[93m"
 		print "enter a query:\033[0m"
 		input = raw_input()
-		if ('\x1b' in input):
-			input = lastinput
-		input = input.lower()
+		if not input.strip()=="":
+			if ('\x1b' in input):
+				input = lastinput
+			input = input.lower()
 
-		if (not simple_query(input, text, step)):
-			query_type = parser.parse_query(input)
-			answerer.answer_question(query_type, text)
-		lastinput = input
-
+			if (not simple_query(input, text, step)):
+				query_type = parser.parse_query(input)
+				answerer.answer_question(query_type, text)
+			lastinput = input
 
 if __name__ == '__main__':
 	step = 0

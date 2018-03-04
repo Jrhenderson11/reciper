@@ -15,3 +15,6 @@ def get_steps(method):
 		if (not line.strip()==""):
 			steps.append(line)
 	return steps
+
+def pretty_print(question_parts):
+	print "pretty printing question"

@@ -76,7 +76,7 @@ def parse_query(input):
 			print wordnet.get_full_meaning(tag[0])
 
 	# Now use wordnet
-
+	#ORDER BY NUM WITH .v.
 	if (subject==''):
 		print "	USING WORDNET FOR SUBJECT HYPERNYMS"
 		for word in words:

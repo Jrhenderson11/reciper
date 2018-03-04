@@ -1,5 +1,6 @@
 import re
 import nltk
+
 from nltk.corpus import wordnet as net,ieer, semcor
 
 def get_full_meaning(word):
@@ -133,11 +134,31 @@ def main():
 		      for rel in relextract.extract_rels('PER', 'ORG', doc, corpus='ieer', pattern=ROLES):
 		          print(relextract.rtuple(rel)) # doctest: +ELLIPSIS
 
+
+def print_intro():
+	print " 	     ____________"
+	print " 	    /\\  ________ \\"
+	print " 	   /  \\ \\______/\\ \\"
+	print " 	  / /\\ \\ \\  / /\\ \\ \\"
+	print " 	 / / /\\ \\ \\/ / /\\ \\ \\"
+	print " 	/ / /__\\_\\/ / /__\\_\\ \\"
+	print "       / /_/_______/ /________\\"
+	print "       \\ \\ \\______ \\ \\______  /"
+	print " 	\\ \\ \\  / /\\ \\ \\  / / /"
+	print " 	 \\ \\ \\/ / /\\ \\ \\/ / /"
+	print " 	  \\ \\/ / /__\\_\\/ / /"
+	print " 	   \\  / /______\\/ /"
+	print "	    \\/___________/\n"
+	print "	wordnet query interface"
+	print "--------------------------------"
+
 #test code
 if __name__ == "__main__":
+	print_intro()
 	input = ""
 
 	while not input == "quit":
 		print "enter word"
 		input = raw_input()
 		print get_all_related(input)
+

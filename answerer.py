@@ -3,7 +3,6 @@ import utils
 import parser
 import wordnet
 
-
 def answer_question(query, text):
 	(desc, ingredients, method) = text
 	(question, adj, subject, verb) = query

@@ -20,7 +20,6 @@ def answer_question(query, text):
 			print "temp query"
 			find_temperature(method)
 		elif (adj=='long'):
-			#look through steps for time using FOR __ MINUTES / HOURS or UNTIL
 			#get steps with verb same as when
 			found = False
 			for step in parser.get_steps(method):
@@ -66,22 +65,27 @@ def answer_question(query, text):
 								utils.printgreen("ADVERB: " + word)
 	elif (question == 'when'):
 		#look for subject and verb combo in a step
-		i=0
-		for step in parser.get_steps(method):
-			if (verb in step) and subject in step:
-				utils.printgreen("	< STEP " + str(i) + ">")
-				utils.printgreen(step)
-				utils.printgreen("--------------------------")
-				break
-			i = i+1
+		find_step(subject, verb, method)
 	elif (question=='what'):
 		#synonyms temp
 		if (subject=='temperature' or 'temperature' in wordnet.get_all_related(subject) or 'heat' in wordnet.get_all_related(adj) or 'hot' in wordnet.get_all_related(adj)):
 			find_temperature(method)
 	elif (question=="need"):
-		#look through inredients for subj
-		if not subject == '':
-			quantity_of(subject, ingredients)
+		#look through inredients for subj if no verb
+		if (verb==""):
+			if not subject == '':
+
+				if quantity_of(subject, ingredients)==True:
+					utils.printgreen("yes, you do need "+ subject)
+				else:
+					utils.printgreen("you do not need "+ subject)
+		else:
+			#same as when
+			if find_step(subject, verb, method)==True:
+				utils.printgreen("yes, you do need to " + verb + " the " + subject)
+			else:
+				utils.printgreen("you do not need to " + verb + " the " + subject)
+
 
 def get_ingredient_lines(subject, ingredients):
 	found = False
@@ -95,6 +99,7 @@ def get_ingredient_lines(subject, ingredients):
 	return lines
 
 def quantity_of(subject, ingredients):
+	found = False
 	quantity = ""
 	forchunks = ingredients.split("\n\n")
 	#print forchunks
@@ -104,11 +109,24 @@ def quantity_of(subject, ingredients):
 			if len(useful) > 0:
 				print part.strip().split("\n")[0]
 			for line in useful:
+				found = True
 				utils.printgreen(line)
 				if ('of' in line):
 					quantity = line.split("of")[0].strip()
 
 				#print "quantity: " + quantity			
+	return found
+
+def find_step(subject, verb, method):
+	i=0
+	for step in parser.get_steps(method):
+		if (verb in step) and subject in step:
+			utils.printgreen("	< STEP " + str(i) + ">")
+			utils.printgreen(step)
+			utils.printgreen("--------------------------")
+			return True
+		i = i+1
+	return False
 
 def find_temperature(method):
 	#oven to

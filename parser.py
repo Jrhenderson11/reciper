@@ -21,7 +21,7 @@ def get_steps(method):
 def get_tokenised(text):
 	allwords = (word_tokenize(text))
 	#remove punctuation
-	punctuation = {".", ","}
+	punctuation = {".", ",", "?"}
 	words = []
 	for word in allwords:
 		if (word not in punctuation):
@@ -99,6 +99,8 @@ def parse_query(input):
 		#Do I need
 		if "need" in input:
 			question="need"
+			if verb =="need":
+				verb="" 
 
 
 	print (question, adj, subject, verb)

@@ -3,6 +3,36 @@ import nltk
 
 from nltk.corpus import wordnet as net,ieer, semcor
 
+#returns true if noun
+def noun_or_verb(word):
+	count_n = 0
+	count_v = 0
+	
+	for meaning in get_full_meaning(word):
+		if len(re.findall(r'\.n\.', meaning))>0:
+			count_n = count_n + 1
+		if len(re.findall(r'\.v\.', meaning))>0:
+			count_v = count_v + 1
+	
+	#print "count_n: " + str(count_n)
+	#print "count_v: " + str(count_v)
+	if (count_n > count_v):
+		return True
+	return False
+
+#returns true if adjective
+def adj_or_verb(word):
+	count_a = 0
+	count_v = 0
+	for meaning in get_full_meaning(word):
+		if len(re.findall(r'\.a\.', meaning))>0:
+			count_a = count_a + 1
+		if len(re.findall(r'\.v\.', meaning))>0:
+			count_v = count_v + 1
+	if (count_a >= count_v):
+		return True
+	return False
+
 def get_full_meaning(word):
 	meanings = []
 	for meaning in net.synsets(word):

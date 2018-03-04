@@ -82,7 +82,7 @@ def parse_query(input):
 		for word in words:
 			hypers = wordnet.get_all_related(word)
 			print word + ": " + str(hypers)
-			if "food" in str(hypers):
+			if len(re.findall(r'food|kitchen|spice|cutlery', str(hypers))) > 0:
 				subject = word
 
 	if (verb==''):
@@ -101,6 +101,22 @@ def parse_query(input):
 			question="need"
 			if verb =="need":
 				verb="" 
+
+	if (verb==subject):
+		if (wordnet.noun_or_verb(subject)==True):
+			print "removing verb " + subject
+			verb = ""
+		else:
+			print "removing subject " + subject
+			subject = ""
+
+	if (adj==verb):
+		if (wordnet.adj_or_verb(subject)==True):
+			print "removing verb " + subject
+			verb = ""
+		else:
+			print "removing adj " + subject
+			adj = ""
 
 
 	print (question, adj, subject, verb)

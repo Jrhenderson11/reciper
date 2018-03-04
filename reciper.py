@@ -27,12 +27,12 @@ def simple_query(input, text, step):
 	steps = parser.get_steps(method)
 
 
-	if (input=='next' or input == 'next step' or input == 'next instruction'):
+	if len(re.findall(r'next( instruction| step)?', input)) > 0:
 		if (not step==len(steps)):
 			print steps[step+1]
 			step = step + 1
 		return True
-	elif (input=='current' or input == 'current step' or input == 'current instruction'):
+	elif len(re.findall(r'current( instruction| step)?', input))>0:
 		print "	- " + steps[step]
 		return True
 	elif ('description' in input):

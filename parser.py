@@ -81,14 +81,16 @@ def parse_query(input):
 		print "	USING WORDNET FOR SUBJECT HYPERNYMS"
 		for word in words:
 			hypers = wordnet.get_all_related(word)
-			print hypers
+			print word + ": " + str(hypers)
 			if "food" in str(hypers):
 				subject = word
 
 	if (verb==''):
 		print "	USING WORDNET FOR VERB HYPERNYMS"
 		for word in words:
+
 			hypers = wordnet.get_full_meaning(word)
+			print word + ": " + str(hypers)
 			if ".v." in str(hypers):
 				verb = word		
 

@@ -1,7 +1,7 @@
 # reciper
 A natural language processing recipe based question answering system
 
-##Description:
+## Description:
 
 A system for interpreting and querying a knowledge base from a recipe
 When the program is loaded it reads a file and starts a querying interface, which the 
@@ -10,7 +10,7 @@ user can ask questions to.
 It uses several natural language processing techniques to analyse both the question and recipe text to come up with an answer, see the **Technical details** section for more info
 
 -------------------------------------------------
-##Usage:
+## Usage:
 
 	python reciper.py <RECIPE FILE>?
 
@@ -22,9 +22,9 @@ useful interface for querying wordnet synonym information
 
 
 -------------------------------------------------
-##Files:
+## Files:
 
-####Main functionality:
+#### Main functionality:
 
 **reciper.py**: main file that displays interface and answers very simple queries
 
@@ -34,7 +34,7 @@ useful interface for querying wordnet synonym information
 
 **wordnet.py**: interfaces with nltk wordnet to find synonyms, hypernyms and hyponyms of words, this allows **parser** and **answerer** to explore different meanings of a word e.g cook and bake being similar, mix being a verb and a noun
 
-####Other functionality:
+#### Other functionality:
 
 **utils.py**: some useful output functions
 
@@ -42,7 +42,7 @@ useful interface for querying wordnet synonym information
 
 **conversions.py**: handles unit conversion queries
 
-####Other files:
+#### Other files:
 
 **Recipe**: a BBC recipe for apple crumble (https://www.bbc.co.uk/food/recipes/applecrumble_2971)
 

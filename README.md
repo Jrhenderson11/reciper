@@ -60,10 +60,15 @@ useful interface for querying wordnet synonym information
 
 apply QA technique: Category specific transformation rules (hand crafted)
 Where-Q insert "is" to all possible locations e.g
+
 –"where is the louvre museum located" 
+
 –is the louvre located
+
 –the is louvre museum located 
+
 –the louvre is museum located 
+
 –the louvre museum is located
 
 stop confusion between priority of alternate meanings in wordnet e.g

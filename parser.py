@@ -102,7 +102,7 @@ def parse_query(input):
 				verb="" 
 
 	if (verb==subject):
-		if (wordnet.noun_or_verb(subject)==True):
+		if (wordnet.noun_or_verb(subject)==True or len(re.findall(r'food|kitchen|spice|cutlery', str(wordnet.get_all_related(word)))) > 0):
 			print "removing verb " + subject
 			verb = ""
 		else:

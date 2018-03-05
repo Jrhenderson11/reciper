@@ -28,9 +28,9 @@ def answer_question(query, text):
 			for step in parser.get_steps(method):
 				
 				if (subject in step and (verb + " " in step)):
-					found = True
 					matches = re.findall(r'.* (min(ute)?|h(ou)?r|second)s?' , step) 
 					if (len(matches) > 0):
+						found = True
 						utils.printgreen(step)
 			if (found==False):
 				print "LOOKING AT SYNONYMS"
@@ -40,15 +40,24 @@ def answer_question(query, text):
 					if not synonyms is None:
 						for synonym in synonyms:
 							if (subject in step and (synonym in step)):
-								found = True
-								
 								if (len(re.findall(r'.* (min(ute)?|h(ou)?r|second)s?' , step)) > 0):
+									found = True
 									utils.printgreen(step)
 									break
 					if found==True:
 						break
-			if found==False:
+			if found==False and subject == "":
+				utils.printgreen("Don't know what you're looking for,")
 				find_times(desc)
+			elif found==False and (not subject == ""):
+				print "looking for subject only"
+				#look for just subject
+				for step in parser.get_steps(method):
+					if (subject in step):
+						found = True
+						matches = re.findall(r'.* (min(ute)?|h(ou)?r|second)s?' , step) 
+						if (len(matches) > 0):
+							utils.printgreen(step)
 
 		elif (not verb == ""):
 			#look for verb
@@ -56,7 +65,7 @@ def answer_question(query, text):
 			#look for adverb (RB, RBR, RBS)
 			#print "method:" + method
 			for line in method.split("\n"):
-				if (verb in line):
+				if (len(re.findall(r'(\s|^)' + verb + r'(\s|$)'))):
 					#print "found " + verb + " in " + line
 					utils.printgreen(line)
 					words = parser.get_tokenised(line)
@@ -74,8 +83,6 @@ def answer_question(query, text):
 		if (subject=='temperature' or 'temperature' in wordnet.get_all_related(subject) or 'heat' in wordnet.get_all_related(adj) or 'hot' in wordnet.get_all_related(adj)):
 			find_temperature(method)
 		#serve with
-
-
 	elif (question=="need"):
 		#look through inredients for subj if no verb
 		if (verb==""):

@@ -71,21 +71,6 @@ Where-Q insert "is" to all possible locations e.g
 
 –the louvre museum is located
 
-stop confusion between priority of alternate meanings in wordnet e.g
-
-	how long in the oven
-
-is interpreted as
-
-	('how', 'long', 'oven', 'long')
-
-but actually long should not be used as a verb here
-
-one way to fix this is to look at the number of meanings of 'long' that are verbs vs nouns
-or do not allow word to appear in 2 different parts of sentence (beware of mix!)
-
-OR: if at the end of parsing a word does appear twice use the most probable form (using wordnet synonyms) to distinguish
-
 improve recognition of verbs and subjects with wordnet and reduce false positives
 
 -------------------------------------------------
@@ -159,6 +144,35 @@ and we see 'flour' is not correctly identified as a noun. So now we take a look 
 
 We can see that one of the hypernyms of flour is foodstuff, so we select it as our subject. More generally any hypernym / additional meaning that contains the word "food" is a probable subject.
 
-currently there is an issue with only having one subject / verb returned from parse_query(): curently if there is a definitive article in the query we use that to find which noun is the subject. However if there are multiple nouns in the query it will only ever know about one. This means more complex query types are not supported, such as asking about the relation between 2 things. I'm working on this at the moment, but it is tricky as it is very likely the other noun is not tagged as NN by the postagger, but adding any noun interpretation of any word in the sentence to the subjects would be very confusing.
+Currently there is an issue with only having one subject / verb returned from parse_query(): curently if there is a definitive article in the query we use that to find which noun is the subject. However if there are multiple nouns in the query it will only ever know about one. This means more complex query types are not supported, such as asking about the relation between 2 things. I'm working on this at the moment, but it is tricky as it is very likely the other noun is not tagged as NN by the postagger, but adding any noun interpretation of any word in the sentence to the subjects would be very confusing.
+
+Also, many user querieswill not actually have all the parts of the query we look for. for example if no verb is found the parser will switch to the backup synonym checking system to find a verb. This can be problematic:
+
+	how long in the oven?
+
+would be parsed as 
+
+	('how', 'long', 'oven', 'long')
+
+so long is identified first as an adjective, and then again as a verb, even though that is not its meaning. So at the end of parse_query() if an adjective and verb match, or a noun and verb match I try to choose which one it is.
+
+at first I just looked at the number of meanings in wordnet.get_full_meaning() that were verbs as opposed to nouns or adjectives as opposed to nouns. This works in some situations but not others. For example the query
+
+	how much flour?
+
+is now parsed as 
+
+	('how', 'much', '', 'flour')
+
+because there are multiple interpretations for the verb flour but only one interpretation as a noun. This is because currently my wordnet interpretation gives no idea of confidence, or how frequentl it is used as a noun vs verb. The way I currently fix it is by not just choosing by number of interpretations in wordnet, but also saying that if its noun interpretation is a type of food this is more important than its verb meaning and the subject is preferred over the verb.
+
+This still does not work for differentiation between the meaning of 'butter' in:
+
+	when do I add the butter?
+
+	when do I butter the dish?
+
+possible remedies for this include looking at word embeddings to examine context, or to use actual parsing to see if butter is in the place of a VP or NP 
+
 
 Once the query has been parsed **answerer.py** takes care of answering the question. This is done using simple regualr expressions and some hard coded if statements, for instance if the question is a 'how long' question then answerer looks through the steps for a combination of the questoin subject, verb and a regular expression matching an amount of time. Most other questions are answered this way, the complex NLP stuff is in the interpretation of the question, then it is answered by searching the recipe for answers more simply.

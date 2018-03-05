@@ -28,7 +28,6 @@ def get_tokenised(text):
 			words.append(word)
 	return words
 
-
 def postag(words):
 	file = open("postagger.pickle", "rb")
 	tagger = pickle.load(file)
@@ -122,4 +121,3 @@ def parse_query(input):
 	print (question, adj, subject, verb)
 
 	return (question, adj, subject, verb)
-

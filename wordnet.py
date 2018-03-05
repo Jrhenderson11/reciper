@@ -164,7 +164,6 @@ def main():
 		      for rel in relextract.extract_rels('PER', 'ORG', doc, corpus='ieer', pattern=ROLES):
 		          print(relextract.rtuple(rel)) # doctest: +ELLIPSIS
 
-
 def print_intro():
 	print " 	     ____________"
 	print " 	    /\\  ________ \\"
